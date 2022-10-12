@@ -28,8 +28,8 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
      //"/": (context) => const Splashscreen(),
-    // "/": (context) =>  AgtDashboard(), 
-    "/": (context) => const Dashboard(), 
+     "/": (context) =>  AgtDashboard(), 
+   // "/": (context) => const Dashboard(), 
      // "/": (context) => const LoginApp(), 
 
       },

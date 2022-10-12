@@ -13,6 +13,7 @@ class AgtDashboard extends StatelessWidget {
     List<SideTile>? title=[
       SideBarTile(icon:Icons.stacked_bar_chart_sharp, name:'Mes Statistiques', title:Text('Mes données',style: TextStyle(fontSize:22,)), body: StatAgt()),
       SideBarTile(icon:Icons.manage_history, name:'Gérer', title:Text('Ajouter un prestataires',style: TextStyle(fontSize:22)), body: agentAdd()),
+      SideBarTile(icon:Icons.checklist_outlined, name:'Rapport', title:Text('Ajouter un prestataires',style: TextStyle(fontSize:22)), body:agentAdd() ),
       SideBarTile(icon:Icons.login, name:'Deconnexion', title:Text('',style: TextStyle(fontSize:22)), body: Text('body')),
     ];
   @override

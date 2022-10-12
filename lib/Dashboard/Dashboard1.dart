@@ -341,7 +341,7 @@ class DashboardScreenState extends State<DashboardScreen> {
     // ignore: todo
     // TODO: implement initState
     super.initState();
-    getStat();
+  // getStat();
     getApiData();
   }
 
