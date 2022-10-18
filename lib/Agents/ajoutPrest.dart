@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:qal_web_admin/Agents/glovalVar.dart';
+import 'package:qal_web_admin/Agents/imagepick.dart';
 import 'package:qal_web_admin/Consts/Const.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -27,6 +29,7 @@ class agentAddState extends State<agentAdd> {
   String? natLib;
   String? livLib;
   String? serLib;
+  int? servValue;
   Future getComm() async {
     final response = await http
         .get(Uri.parse('http://localhost/qal_app/Web/getCommune.php'));
@@ -35,9 +38,10 @@ class agentAddState extends State<agentAdd> {
       setState(() {
         comList = data;
       });
-    }
+    } 
     return "succes";
   }
+
   Future getNat() async {
     final response = await http
         .get(Uri.parse('http://localhost/qal_app/Web/getNationalite.php'));
@@ -49,6 +53,7 @@ class agentAddState extends State<agentAdd> {
     }
     return "succes";
   }
+
   Future getServ() async {
     final response = await http
         .get(Uri.parse('http://localhost/qal_app/Web/getService.php'));
@@ -60,9 +65,10 @@ class agentAddState extends State<agentAdd> {
     }
     return "succes";
   }
+
   Future getNiv() async {
-    final response = await http
-        .get(Uri.parse('http://localhost/qal_app/Web/getNiveau.php'));
+    final response =
+        await http.get(Uri.parse('http://localhost/qal_app/Web/getNiveau.php'));
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
       setState(() {
@@ -71,9 +77,10 @@ class agentAddState extends State<agentAdd> {
     }
     return "succes";
   }
-   Future getEth() async {
-    final response = await http
-        .get(Uri.parse('http://localhost/qal_app/Web/getEthnie.php'));
+
+  Future getEth() async {
+    final response =
+        await http.get(Uri.parse('http://localhost/qal_app/Web/getEthnie.php'));
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
       setState(() {
@@ -82,7 +89,8 @@ class agentAddState extends State<agentAdd> {
     }
     return "succes";
   }
-    Future getRel() async {
+
+  Future getRel() async {
     final response = await http
         .get(Uri.parse('http://localhost/qal_app/Web/getReligion.php'));
     if (response.statusCode == 200) {
@@ -96,6 +104,10 @@ class agentAddState extends State<agentAdd> {
 
   DateTime date = DateTime.now();
   TextEditingController birthcontroller = TextEditingController();
+  TextEditingController namecontroller = TextEditingController();
+  TextEditingController numerocontroller = TextEditingController();
+  TextEditingController emailcontroller = TextEditingController();
+  TextEditingController passcontroller = TextEditingController();
   showpickerdate(BuildContext context) async {
     DateTime? newdate = await showDatePicker(
       context: context,
@@ -107,38 +119,67 @@ class agentAddState extends State<agentAdd> {
     setState(() {
       date = newdate;
       birthcontroller.text = DateFormat('dd-MM-yyyy').format(newdate);
-      debugPrint(birthcontroller.text);
     });
   }
-    List prestList=[];
-  Future getList() async{
-    final response=await http
+
+  List prestList = [];
+  Future getList() async {
+    final response = await http
         .get(Uri.parse('http://localhost/qal_app/Web/getPrestataire.php'));
-    if(response.statusCode==200){
-      var data=jsonDecode(response.body);
-      prestList=data;
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      setState(() {
+        prestList = data;
+      });
     }
   }
-  DataTable dataprestlist(){
+
+  DataTable dataprestlist() {
     return DataTable(
-      
-      headingTextStyle:TextStyle(color:Colors.blue,fontWeight:FontWeight.bold),
-      dataTextStyle:TextStyle(color:Colors.black),
-      columns:const[
-        DataColumn(label:Text('Matricule'),numeric:false,tooltip:'Matricule'),
-        DataColumn(label:Text('Nom'),numeric:false,tooltip:'Nom'),
-        DataColumn(label:Text('Contact'),numeric:false,tooltip:'Contact'),
-        DataColumn(label:Text('Service'),numeric:false,tooltip:'Service'),
-        DataColumn(label:Text('Nationalité'),numeric:false,tooltip:'Nationalite'),
-        DataColumn(label:Text('Commune'),numeric:false,tooltip:'Commune'),
-        DataColumn(label:Text('Ethnie'),numeric:false,tooltip:'Ethnie'),
-        DataColumn(label:Text('Réligion'),numeric:false,tooltip:'Religion'),
-        DataColumn(label:Text('Actions'),numeric:false,tooltip:'Actions'),
-      ], 
-      rows:List.generate(prestList.length, (index){
-        return DataRow(
-          cells:[
-            DataCell(Text(prestList[index]['Mat_prest'])),
+        headingTextStyle:
+            TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+        dataTextStyle: TextStyle(color: Colors.black),
+        columns: const [
+          DataColumn(
+            label: Text('Matricule'),
+            numeric: true,
+          ),
+          DataColumn(
+            label: Text('Nom'),
+            numeric: false,
+          ),
+          DataColumn(
+            label: Text('Contact'),
+            numeric: false,
+          ),
+          DataColumn(
+            label: Text('Service'),
+            numeric: false,
+          ),
+          DataColumn(
+            label: Text('Nationalité'),
+            numeric: false,
+          ),
+          DataColumn(
+            label: Text('Commune'),
+            numeric: false,
+          ),
+          DataColumn(
+            label: Text('Ethnie'),
+            numeric: false,
+          ),
+          DataColumn(
+            label: Text('Réligion'),
+            numeric: false,
+          ),
+          DataColumn(
+            label: Text('Actions'),
+            numeric: false,
+          ),
+        ],
+        rows: List.generate(prestList.length, (index) {
+          return DataRow(cells: [
+            DataCell(Text('${index+1}')),
             DataCell(Text(prestList[index]['nomcomplet_prest'])),
             DataCell(Text(prestList[index]['contact_prest'])),
             DataCell(Text(prestList[index]['Lib_serv'])),
@@ -148,14 +189,135 @@ class agentAddState extends State<agentAdd> {
             DataCell(Text(prestList[index]['religion_prest'])),
             DataCell(Row(
               children: [
-                TextButton(onPressed:(){}, child: Text('delete')),
-                TextButton(onPressed:(){}, child: Text('editer')),
+                ElevatedButton(
+                    onPressed: () {
+                        showDialog(
+                          context: context, 
+                          builder:((context) {
+                            return AlertDialog(
+                              title: Text('Suppression',style:TextStyle(color:Colors.black)),
+                              content:Text("Voulez-vous supprimer ${prestList[index]['nomcomplet_prest']}",style:TextStyle(color:Colors.black)),
+                              actions: [
+                                TextButton(onPressed:(){
+                                  CloseButton();
+                                }, child: Text("Annuler")),
+                                TextButton(onPressed:(){
+                                   delete(idprest: prestList[index]['Mat_prest']);
+                                }, child: Text('delete'))
+                              ],
+                            );
+                          })
+                          );
+                    },
+                    style:
+                        ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                    child: Text('delete')),
+                SizedBox(
+                  width: 10,
+                ),
+                ElevatedButton(onPressed: () {}, child: Text('editer'),),
               ],
             )),
-          ]
-        );
-      })
-      );
+          ]);
+        }));
+  }
+
+  ////API D'INSERTION
+ Future insertdata({
+    required String name,
+    required String service,
+    required String? email,
+    required String contact,
+    required String birthday,
+    required String commune,
+    required String ethnie,
+    required String religion,
+    required String nationalite,
+    required String nivetude,
+    required String pass, 
+    required String img, 
+  }) async {
+    try {
+      const url = '${Host.hostlink}/inscriptPrest.php';
+      final response = await http.post(Uri.parse(url), body: {
+       'name':name,
+       'service':service,
+       'email':email,
+       'contact':contact, 
+       'birthday':birthday,
+       'commune':commune,
+       'ethnie':ethnie,
+       'religion':religion,
+       'nationalite':nationalite,
+       'nivetude':nivetude,
+       'pass':pass,
+       'image':img,
+      });
+      print(namecontroller.text);
+      print(serLib);
+      print(emailcontroller.text);
+      print(numerocontroller.text);
+      print(birthcontroller.text);
+      print(libcommune);
+      print(libethnie);
+      print(relLib);
+      print(natLib);
+      print(nivlib);
+      print(passcontroller.text);
+      print(webimage);
+
+      if (response.statusCode == 200) {
+        var jsondecode = jsonDecode(response.body); 
+        var outnum = jsondecode[0];
+        if (outnum == 0) {
+          print("Succes");
+         setState(() {
+            getList();
+            namecontroller.text='';
+            birthcontroller.text='';
+            emailcontroller.text='';
+            numerocontroller.text='';
+            passcontroller.text='';
+            libcommune=null;
+            serLib=null;
+            libethnie=null;
+            relLib=null;
+            natLib=null;
+            nivlib=null;
+            imgfile=null;
+            servValue=null;
+         });
+        } else {
+          print("Error");
+        }
+      }
+    } catch (e) {
+      debugPrint('Dart ::: ${e.toString()}');
+    }
+  }
+    Future delete({required String idprest}) async {
+    print('Delete');
+    try {
+      var url = "${Host.hostlink}/deletePrest.php";
+      final response = await http.post(Uri.parse(url), body: {
+        'idprest': idprest,
+      });
+      if (response.statusCode == 200) {
+        var jsondata = jsonDecode(response.body);
+        if(jsondata==0){
+          setState(() {
+            debugPrint('Json data =$jsondata');
+            getList();
+          });
+        }
+        else
+        {
+          print("Erreur de suppression ");
+        }
+      }
+    } catch (e) {
+      debugPrint("Execption Catch:$e");
+    }
   }
 
   @override
@@ -202,81 +364,91 @@ class agentAddState extends State<agentAdd> {
     ]);
     return Scaffold(
         backgroundColor: Colors.white10,
-        body: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Ajouter un prestataire",
-                    style: TextStyle(color: Colors.blueGrey),
-                  ),
-                  ElevatedButton.icon(
-                      onPressed: () {},
-                      icon: Icon(Icons.add),
-                      label: Text('AJOUTER'))
-                ],
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Ajouter un prestataire",
+                      style: TextStyle(color: Colors.blueGrey),
+                    ),
+                    ElevatedButton.icon(
+                        onPressed: () {
+                        insertdata(name: namecontroller.text, service:servValue.toString(), email: emailcontroller.text, contact: numerocontroller.text, birthday: birthcontroller.text, commune: libcommune!, ethnie: libethnie!, religion: relLib!, nationalite: natLib!, nivetude:nivlib!, pass: passcontroller.text, img: webimage.toString());
+                        },
+                        icon: Icon(Icons.add),
+                        label: Text('AJOUTER'))
+                  ],
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  formAdd(hint: 'Nom complet ', icon: Icons.person, enable: true),
-                  servList(hint:'Service'),
-
-                  formAdd(
-                      hint: 'Adresse email (facultatif)',
-                      icon: Icons.mail,
-                      enable: true),
-                  formAdd(hint: 'Contact', icon: Icons.phone, enable: true),
-                ],
+              PickImages(),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    formAdd(
+                        hint: 'Nom complet ', icon: Icons.person, enable: true,controller:namecontroller),
+                    servList(hint: 'Service'),
+                    formAdd(
+                        hint: 'Adresse email (facultatif)',
+                        icon: Icons.mail,
+                        enable: true,controller:emailcontroller),
+                    formAdd(hint: 'Contact', icon: Icons.phone, enable: true,controller:numerocontroller),
+                  ],
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  GestureDetector(
-                      onTap: () {
-                        showpickerdate(context);
-                      },
-                      child: formAdd(
-                          icon: Icons.date_range,
-                          hint: 'Date de naissance',
-                          enable: false,
-                          controller: birthcontroller)),
-                  drop(hint: 'Commune de résidence'),
-                  ethniedrop(hint: 'Ethnie'),
-                  reldrop(hint: 'Religion'),
-                ],
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    GestureDetector(
+                        onTap: () {
+                          showpickerdate(context);
+                        },
+                        child: formAdd(
+                            icon: Icons.date_range,
+                            hint: 'Date de naissance',
+                            enable: false,
+                            controller: birthcontroller)),
+                    drop(hint: 'Commune de résidence'),
+                    ethniedrop(hint: 'Ethnie'),
+                    reldrop(hint: 'Religion'),
+                  ],
+                ),
               ),
-            ),
-            Padding(
-              padding:EdgeInsets.all(8.0),
-              child:Row(
-                children: [
-                  natdrop(hint: 'Nationalité'),
-                  nivdrop(hint: 'Niveau d\' Etude'),
-                 formAdd(hint: 'Mot de passe ', icon: Icons.security, enable: true,pass:true),
-                 formAdd(hint: 'Confirmer le mot de passe ', icon: Icons.security, enable: true,pass:true),
-
-                ],
-              )
-            ),
-            Divider(),
-
-            dataprestlist()
-          ],
+              Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      natdrop(hint: 'Nationalité'),
+                      nivdrop(hint: 'Niveau d\' Etude'),
+                      formAdd(
+                          hint: 'Mot de passe ',
+                          icon: Icons.security,
+                          enable: true,
+                          pass: true,controller:passcontroller),
+                      formAdd(
+                          hint: 'Confirmer le mot de passe ',
+                          icon: Icons.security,
+                          enable: true,
+                          pass: true),
+                    ],
+                  )),
+              Divider(),
+              dataprestlist()
+            ],
+          ),
         ));
   }
 
   Padding formAdd(
       {required IconData icon,
       required String hint,
-      bool pass=false,
+      bool pass = false,
       TextEditingController? controller,
       required bool enable}) {
     return Padding(
@@ -286,7 +458,7 @@ class agentAddState extends State<agentAdd> {
         height: 35,
         width: 300,
         child: TextFormField(
-          obscureText:pass,
+          obscureText: pass,
           controller: controller,
           style: TextStyle(color: Colors.black),
           decoration: InputDecoration(
@@ -299,15 +471,15 @@ class agentAddState extends State<agentAdd> {
     );
   }
 
-  Padding drop(
-      {required String hint,
-      }) {
+  Padding drop({
+    required String hint,
+  }) {
     return Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
             color: Color.fromARGB(255, 230, 230, 230),
             height: 35,
-            width:300,
+            width: 300,
             child: Center(
               child: DropdownButton(
                   underline: Container(),
@@ -320,23 +492,23 @@ class agentAddState extends State<agentAdd> {
                       child: Text(e['libelle']),
                     );
                   }).toList(),
-                  onChanged: ((value) { 
+                  onChanged: ((value) {
                     setState(() {
                       libcommune = value as String?;
                     });
                   })),
             )));
   }
-  
-    Padding ethniedrop(
-      {required String hint,
-      }) {
+
+  Padding ethniedrop({
+    required String hint,
+  }) {
     return Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
             color: Color.fromARGB(255, 230, 230, 230),
             height: 35,
-            width:300,
+            width: 300,
             child: Center(
               child: DropdownButton(
                   underline: Container(),
@@ -349,22 +521,23 @@ class agentAddState extends State<agentAdd> {
                       child: Text(e['libelle']),
                     );
                   }).toList(),
-                  onChanged: ((value) { 
+                  onChanged: ((value) {
                     setState(() {
                       libethnie = value as String?;
                     });
                   })),
             )));
   }
-   Padding reldrop(
-      {required String hint,
-      }) {
+
+  Padding reldrop({
+    required String hint,
+  }) {
     return Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
             color: Color.fromARGB(255, 230, 230, 230),
             height: 35,
-            width:300,
+            width: 300,
             child: Center(
               child: DropdownButton(
                   underline: Container(),
@@ -377,22 +550,23 @@ class agentAddState extends State<agentAdd> {
                       child: Text(e['libelle']),
                     );
                   }).toList(),
-                  onChanged: ((value) { 
+                  onChanged: ((value) {
                     setState(() {
                       relLib = value as String?;
                     });
                   })),
             )));
   }
-    Padding natdrop(
-      {required String hint,
-      }) {
+
+  Padding natdrop({
+    required String hint,
+  }) {
     return Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
             color: Color.fromARGB(255, 230, 230, 230),
             height: 35,
-            width:300,
+            width: 300,
             child: Center(
               child: DropdownButton(
                   underline: Container(),
@@ -405,22 +579,23 @@ class agentAddState extends State<agentAdd> {
                       child: Text(e['libelle']),
                     );
                   }).toList(),
-                  onChanged: ((value) { 
+                  onChanged: ((value) {
                     setState(() {
                       natLib = value as String?;
                     });
                   })),
             )));
   }
-   Padding nivdrop(
-      {required String hint,
-      }) {
+
+  Padding nivdrop({
+    required String hint,
+  }) {
     return Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
             color: Color.fromARGB(255, 230, 230, 230),
             height: 35,
-            width:300,
+            width: 300,
             child: Center(
               child: DropdownButton(
                   underline: Container(),
@@ -433,22 +608,23 @@ class agentAddState extends State<agentAdd> {
                       child: Text(e['libelle']),
                     );
                   }).toList(),
-                  onChanged: ((value) { 
+                  onChanged: ((value) {
                     setState(() {
                       nivlib = value as String?;
                     });
                   })),
             )));
   }
-  Padding servList(
-      {required String hint,
-      }) {
+
+  Padding servList({
+    required String hint,
+  }) {
     return Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
             color: Color.fromARGB(255, 230, 230, 230),
             height: 35,
-            width:300,
+            width: 300,
             child: Center(
               child: DropdownButton(
                   underline: Container(),
@@ -459,15 +635,18 @@ class agentAddState extends State<agentAdd> {
                     return DropdownMenuItem(
                       value: e['Lib_serv'],
                       child: Text(e['Lib_serv']),
+                      onTap:(){
+                        setState(() {
+                          servValue=e['Numserv'];
+                        });
+                      },
                     );
                   }).toList(),
-                  onChanged: ((value) { 
+                  onChanged: ((value) {
                     setState(() {
                       serLib = value as String?;
                     });
                   })),
             )));
   }
-
 }
-

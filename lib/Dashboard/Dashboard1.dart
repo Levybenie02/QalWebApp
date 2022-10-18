@@ -481,7 +481,6 @@ class DashboardScreenState extends State<DashboardScreen> {
                                             datax.length,
                                             (index) =>
                                                 prestfiledata(context,datax, index, () {
-                                                  print("object");
                                                   showDialog(
                                                       context: context,
                                                       builder: ((context) {

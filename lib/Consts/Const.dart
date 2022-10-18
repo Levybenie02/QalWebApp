@@ -10,7 +10,7 @@ class Appcolor {
   static const Color whitecolor = Color.fromARGB(255, 239, 234, 234);
   static const Color blackcolor = Color.fromARGB(255, 36, 34, 33);
   static const Color greycolor = Color.fromRGBO(226, 226, 226, 1);
-  static const Color primaryColor = Color(0xFF2697FF);
+  static const Color primaryColor = Color(0xFF2697FF); 
   static const Color secondarycolor = Color(0xFF2A2D3E);
   static const Color bgColor = Color(0xFF212332);
 }
