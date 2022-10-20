@@ -270,7 +270,7 @@ class agentAddState extends State<agentAdd> {
         var jsondecode = jsonDecode(response.body); 
         var outnum = jsondecode[0];
         if (outnum == 0) {
-          print("Succes");
+          print(jsondecode[1]);
          setState(() {
             getList();
             namecontroller.text='';
@@ -288,7 +288,7 @@ class agentAddState extends State<agentAdd> {
             servValue=null;
          });
         } else {
-          print("Error");
+            print(jsondecode[1]);
         }
       }
     } catch (e) {

@@ -4,6 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:qal_web_admin/Dashboard/Dash.dart';
 import 'package:qal_web_admin/Host.dart';
+
+import 'Agents/session.dart';
 class LoginApp extends StatefulWidget {
   const LoginApp({super.key});
 
@@ -16,34 +18,28 @@ class _LoginAppState extends State<LoginApp> {
   final passtxt = TextEditingController();
   String outnum = '';
   List output = [];
-
+  bool login=false;
    List datax = [];
-    Future getSession() async {
-    try {
-      var url = "${Host.hostlink}/AgentLogin.php";
-      final response = await http.get(Uri.parse(url));
-      if (response.statusCode == 200){ 
-        setState(() {
-          datax = jsonDecode(response.body);
-          if(datax[3]!=null){
-            print(datax[0]);
-            Navigator.of(context).pop();
-            Navigator.push(context, MaterialPageRoute(builder:((context) => Dashboard())));
-          }else
-          {
-            print('Identification echoué ☻');
-          }
-        });
-      }
-    } catch (e) {
-      debugPrint("Execption Catch:$e");
+   isConnected() async {
+    await UserSessionData.getuser();
+    if (UserSessionData.sessionUser != null) {
+      setState(() {
+        login = true;
+       
+      });
+    } else {
+      login = false;
     }
+  }
+
+  islogin() {
+    login = !login;
   }
      Future loginScript(String email, String pass) async {
     try {
       var url = "${Host.hostlink}/AgentLogin.php";
       final response = await http.post(Uri.parse(url),body:{
-         'email': email,
+      'email': email,
       'pass': pass,
       });
       if (response.statusCode == 200) {
@@ -51,10 +47,14 @@ class _LoginAppState extends State<LoginApp> {
           datax = jsonDecode(response.body);
           if(datax[1]==0){
             Navigator.of(context).pop();
-            Navigator.push(context, MaterialPageRoute(builder:((context) => Dashboard())));
+             setState(() {
+          UserSessionData.savesession(UserSessionData.fromJson(datax[2]));
+          UserSessionData.getuser();
+          islogin();
+        });
           }else
           {
-            print('Identification echoué ☻');
+            print(datax[0]);
           }
         });
       }
@@ -67,17 +67,18 @@ class _LoginAppState extends State<LoginApp> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getSession();
+    isConnected();
+ //   getSession();
   }
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    return Scaffold(
+    return (login)? Dashboard(): Scaffold(
         body: Center(
             child: Container(
-                height: height * 0.55,
-                width: width * 0.23,
+                height: height * 0.45,
+                width: width * 0.22,
                 color: Colors.white10,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -85,13 +86,13 @@ class _LoginAppState extends State<LoginApp> {
                     const Center(
                         child:
                             Text('Connexion', style: TextStyle(fontSize: 22))),
-                    SizedBox(
-                      height: 10,
-                    ),
+                    /* SizedBox(
+                      height: 4,
+                    ), */
                     Column(
                       children: [
-                        loginform('Adresse Email', emailtxt, null),
-                        loginform('Mot de passe', passtxt, null),
+                        formAdd(hint:'Email ou pseudo', icon:Icons.person, enable:true,controller: emailtxt ),
+                        formAdd(hint:'Mot de passe', icon:Icons.password, enable:true, pass:true,controller:passtxt),
                         Padding(
                           padding: EdgeInsets.only(left: height * 0.2),
                           child: TextButton(
@@ -101,43 +102,17 @@ class _LoginAppState extends State<LoginApp> {
                         const SizedBox(
                           height: 5,
                         ),
-                        MaterialButton(
-                          height: 55,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15)),
-                          color: Colors.blue,
-                          onPressed: () {
-                            loginScript(emailtxt.text,passtxt.text);
+                        ElevatedButton(onPressed: (){
+                          loginScript(emailtxt.text,passtxt.text);
                             showDialog(context: context,
                              builder: ((context) {
                                return Center(child: const CircularProgressIndicator());
                              })
                              );
-                          },
-                          child: Text(
-                            "CONNEXION",
-                            style: GoogleFonts.itim(
-                                fontSize: 23, color: Colors.white),
-                          ),
-                        )
+                        }, child: Text("Connexion"))
                       ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: MaterialButton(
-                        height: 55,
-                        minWidth: height * 0.1,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15)),
-                        color: Colors.green,
-                        onPressed: () {},
-                        child: Text(
-                          "Créer un compte",
-                          style: GoogleFonts.itim(
-                              fontSize: 23, color: Colors.white),
-                        ),
-                      ),
-                    ),
+                    TextButton(onPressed:(){}, child: Text('Créer un compte')),
                   ],
                 ))));
   }
@@ -159,6 +134,31 @@ class _LoginAppState extends State<LoginApp> {
           hintText: hint,
         ),
         validator: validator,
+      ),
+    );
+  }
+    Padding formAdd(
+      {required IconData icon,
+      required String hint,
+      bool pass = false,
+      TextEditingController? controller,
+      required bool enable}) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        color: Color.fromARGB(40, 230, 230, 230),
+        height: 35,
+        width: 300,
+        child: TextFormField(
+          obscureText: pass,
+          controller: controller,
+          style: TextStyle(color: Colors.white),
+          decoration: InputDecoration(
+            enabled: enable,
+            prefixIcon: Icon(icon),
+            hintText: hint,
+          ),
+        ),
       ),
     );
   }

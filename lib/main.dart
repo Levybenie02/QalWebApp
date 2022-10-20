@@ -28,9 +28,9 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
      //"/": (context) => const Splashscreen(),
-     "/": (context) =>  AgtDashboard(), 
+   //  "/": (context) =>  AgtDashboard(), 
    // "/": (context) => const Dashboard(), 
-     // "/": (context) => const LoginApp(),   
+      "/": (context) => const LoginApp(),   
 
       },
     );
