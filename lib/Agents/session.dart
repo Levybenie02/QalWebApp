@@ -43,7 +43,7 @@ class UserSessionData {
       var userDecode = json.decode(data!);
       var user = UserSessionData.fromJson(userDecode);
       sessionUser = user;
-      print(sessionUser);
+      print("${sessionUser!.id} : ${sessionUser!.email}");
     }
   }
 

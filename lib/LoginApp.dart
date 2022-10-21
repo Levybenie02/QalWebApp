@@ -19,7 +19,7 @@ class _LoginAppState extends State<LoginApp> {
   String outnum = '';
   List output = [];
   bool login=false;
-   List datax = [];
+   List? datax;
    isConnected() async {
     await UserSessionData.getuser();
     if (UserSessionData.sessionUser != null) {
@@ -45,16 +45,17 @@ class _LoginAppState extends State<LoginApp> {
       if (response.statusCode == 200) {
         setState(() {
           datax = jsonDecode(response.body);
-          if(datax[1]==0){
+          if(datax![1]==0){
             Navigator.of(context).pop();
              setState(() {
-          UserSessionData.savesession(UserSessionData.fromJson(datax[2]));
+          UserSessionData.savesession(UserSessionData.fromJson(datax![2]));
           UserSessionData.getuser();
           islogin();
         });
           }else
           {
-            print(datax[0]);
+            Navigator.pop(context);
+
           }
         });
       }
@@ -109,7 +110,9 @@ class _LoginAppState extends State<LoginApp> {
                                return Center(child: const CircularProgressIndicator());
                              })
                              );
-                        }, child: Text("Connexion"))
+                        }, child: Text("Connexion")),
+                        SizedBox(height:10),
+                       (datax!=null)? Text(datax![0],style:TextStyle(color:Colors.red)):Text(''),
                       ],
                     ),
                     TextButton(onPressed:(){}, child: Text('Créer un compte')),

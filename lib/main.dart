@@ -8,7 +8,6 @@ import 'package:qal_web_admin/Consts/Const.dart';
 import 'Dashboard/Dash.dart';
 import 'LoginApp.dart';
 
-
 void main() {
   runApp(const MyApp());
 }

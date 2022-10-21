@@ -1,8 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_admin_scaffold/admin_scaffold.dart';
+import 'package:qal_web_admin/Agents/session.dart';
 import 'package:qal_web_admin/Commande/valid.dart';
 import 'package:qal_web_admin/Consts/Const.dart';
 import 'package:qal_web_admin/Dashboard/Prestataires/addpresta.dart';
+import 'package:qal_web_admin/LoginApp.dart';
 
 import '../Commande/Encours.dart';
 import '../Commande/enattente.dart';
@@ -74,6 +77,32 @@ class _DashboardState extends State<Dashboard> {
           iconTheme:const IconThemeData(color: Color.fromARGB(255, 28, 49, 77),),
           backgroundColor:Colors.white,
           title:const Text("Qal Dashboard",style:TextStyle(fontWeight:FontWeight.w700,color: Color.fromARGB(255, 28, 49, 66),),),
+          actions: [
+            IconButton(onPressed:(){
+              showCupertinoDialog(
+                context: context, 
+                builder:((context) {
+                  return AlertDialog(
+                    title: Text('Deconnexion',style:TextStyle(color:Colors.black),),
+                    content:Text("Voulez-vous vous deconnecter ?",style:TextStyle(color:Colors.black),),
+                    actions: [
+                      TextButton(onPressed:(){
+                        Navigator.pop(context);
+                      }, child:Text('ANNULER')),
+                      TextButton(onPressed:(){
+                          setState(() {
+          UserSessionData.Disconnect();
+          Navigator.push(context, MaterialPageRoute(builder:((context) {
+            return LoginApp();
+          })));
+        });
+                      }, child:Text('OUI')),
+                    ],
+                  );
+                })
+                );
+            }, icon:Icon(Icons.login,color:Colors.red,size:22,))
+          ],
         ),
       sideBar: SideBar(
         backgroundColor: Colors.white,
@@ -141,7 +170,7 @@ class _DashboardState extends State<Dashboard> {
                     route: Cmdencours.id,
                   ),
                   AdminMenuItem(
-                    title: 'Commande validée',
+                    title: 'Commande validée',  
                      icon: Icons.check,
                     route: Cmdvalid.id,
                   ),
