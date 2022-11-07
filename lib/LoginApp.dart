@@ -111,7 +111,7 @@ class _LoginAppState extends State<LoginApp> {
                              })
                              );
                         }, child: Text("Connexion")),
-                        SizedBox(height:10),
+                       // SizedBox(height:10),
                        (datax!=null)? Text(datax![0],style:TextStyle(color:Colors.red)):Text(''),
                       ],
                     ),
