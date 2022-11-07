@@ -7,6 +7,7 @@ import 'package:qal_web_admin/Dashboard/Clients.dart';
 import 'package:qal_web_admin/Consts/Const.dart';
 import 'Dashboard/Dash.dart';
 import 'LoginApp.dart';
+import 'Splashscreen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,11 +23,11 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light().copyWith(
         scaffoldBackgroundColor:Appcolor.bgColor,
-        textTheme:GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme).apply(bodyColor:Colors.white),
+        textTheme:GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme).apply(bodyColor:Colors.grey),
         canvasColor:Color.fromARGB(255, 183, 184, 185),
       ),
       routes: {
-     //"/": (context) => const Splashscreen(),
+   //  "/": (context) => const Splashscreen(),
    //  "/": (context) =>  AgtDashboard(), 
    // "/": (context) => const Dashboard(), 
      "/": (context) => const LoginApp(),   
