@@ -21,9 +21,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-    
+      theme: ThemeData.light().copyWith(
+        scaffoldBackgroundColor:Appcolor.bgColor,
+        textTheme:GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme).apply(bodyColor:Colors.grey),
+        canvasColor:Color.fromARGB(255, 183, 184, 185),
+      ),
       routes: {
-   
+   //  "/": (context) => const Splashscreen(),
+   //  "/": (context) =>  AgtDashboard(), 
+   // "/": (context) => const Dashboard(), 
      "/": (context) => const LoginApp(),   
 
       },
